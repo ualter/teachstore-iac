@@ -33,6 +33,6 @@ module "spain" {
   ec2_key_name                  = var.ec2_key_name
 
   organization                  = "spain"
-  unit                          = "accountability"
+  unit                          = "barcelona"
   #user_names                    = module.users.user_names
 }

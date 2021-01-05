@@ -11,9 +11,9 @@ resource "aws_s3_bucket" "terraform-state-storage-s3" {
         enabled = true
     }
 
-    #lifecycle {
-    #    prevent_destroy = true
-    #}
+    lifecycle {
+        prevent_destroy = false
+    }
 
     tags = {Name = "S3 Remote Terraform State Store"}
           
