@@ -5,6 +5,11 @@ terraform {
       source = "hashicorp/aws"
     }
   }
+
+  backend "s3" {
+      bucket = "iac-terraform-state-ujr"
+      region = "eu-west-3"
+  }
 }
 
 provider "aws" {
@@ -28,5 +33,6 @@ module "spain" {
   ec2_key_name                  = var.ec2_key_name
 
   organization                  = "spain"
+  unit                          = "accountability"
   #user_names                    = module.users.user_names
 }

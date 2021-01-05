@@ -1,3 +1,4 @@
+variable "unit" {}
 variable "organization" {}
 variable "ec2_key_name" {}
 variable "vpc_id" {}

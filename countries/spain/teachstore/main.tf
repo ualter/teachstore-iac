@@ -11,6 +11,7 @@
 module "dev" {
   source                    = "./dev"
   organization              = var.organization
+  unit                      = var.unit
   ec2_key_name              = var.ec2_key_name
   vpc_id                    = var.vpc_id
   public_subnet_ids         = var.public_subnet_ids

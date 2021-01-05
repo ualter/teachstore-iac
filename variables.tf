@@ -10,3 +10,4 @@ variable "aws_regions" {
 variable "ec2_key_name" {
   default = "Administrator"
 }
+
