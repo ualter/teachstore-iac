@@ -2,3 +2,8 @@ variable "unit" {}
 variable "name" {}
 variable "organization" {}
 variable "vpc_cidr_block" {}
+variable "public_subnet_cidr_block" {}
+variable "private_subnet_cidr_block" {}
+variable "tags_vpc" {}
+variable "tags_public_subnet" {}
+variable "tags_private_subnet" {}
