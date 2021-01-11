@@ -1,7 +1,7 @@
 ############# VPC
 resource "aws_vpc" "main" {
     cidr_block = var.vpc_cidr_block
-    assign_generated_ipv6_cidr_block = true
+    assign_generated_ipv6_cidr_block = false
     enable_dns_hostnames             = true
     enable_dns_support               = true
 
@@ -37,11 +37,11 @@ resource "aws_route" "internet_gateway_ipv4" {
   destination_cidr_block = "0.0.0.0/0"
   gateway_id             = aws_internet_gateway.public.id
 }
-resource "aws_route" "internet_gateway_ipv6" {
+/*resource "aws_route" "internet_gateway_ipv6" {
   route_table_id              = aws_default_route_table.main.id
   destination_ipv6_cidr_block = "::/0"
   gateway_id                  = aws_internet_gateway.public.id
-}
+}*/
 
 ############# Subnets
 data "aws_availability_zones" "available" {}

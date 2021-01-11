@@ -19,11 +19,23 @@ apply: plan ## Create or update infrastructure "terraform apply"
 show: ## Show the current state or a saved plan "terraform show"
 	terraform show
 
+output: ## Show all the outputs of this Terraform script (main structure)
+	terraform output
+
+refresh: ## Refresh the values of output with the AWS state
+	terraform refresh
+
 validate: ## Check whether the configuration is valid
 	terraform validate
 
 destroy: ## Destroy previously-created infrastructure "terraform destroy"
 	terraform destroy
+	
+kubectl-config-aws: ## Config Kubectl with the EKS AWS Cluster
+	aws eks --region $$(terraform output region_spain | sed -e 's/^"//' -e 's/"$$//') update-kubeconfig --name $$(terraform output eks_cluster_name | sed -e 's/^"//' -e 's/"$$//')
+
+eks-endpoint: ## Show the EKS Cluster Endpoint at AWS
+	terraform output eks_cluster_endpoint	
 
 check-env: # Check environment variables necessary to this Terraform IaC Project
 ifndef ENVIRONMENT

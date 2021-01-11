@@ -36,3 +36,20 @@ module "spain" {
   unit                          = "barcelona"
   #user_names                    = module.users.user_names
 }
+
+
+output "region_spain" {
+  value = var.aws_regions["paris"]
+}
+output "eks_cluster_name" {
+  value = module.spain.eks_cluster_name
+}
+output "eks_cluster_endpoint" {
+  value = module.spain.eks_cluster_endpoint
+}
+output "eks_cluster_kubeconfig" {
+  value = module.spain.eks_cluster_kubeconfig
+}
+output "eks_config_map_aws_auth" {
+  value = module.spain.eks_config_map_aws_auth
+}
