@@ -4,13 +4,15 @@
 
 module "eks" {
   source          = "terraform-aws-modules/eks/aws"
-  version         = "13.2.1"
   cluster_name    = var.cluster_name
   cluster_version = "1.18"
   subnets         = var.vpc_private_subnets
 
   tags = {
-    Module = "terraform-aws-eks"
+    Module       = "terraform-aws-eks"
+    Unit         = var.unit
+    Organization = var.organization
+    Name         = var.name
   }
 
   vpc_id = var.vpc_id
@@ -19,14 +21,14 @@ module "eks" {
     {
       name                          = "worker-group-1"
       instance_type                 = "t2.small"
-      additional_userdata           = "echo foo bar"
+      #additional_userdata           = "echo foo bar"
       asg_desired_capacity          = 2
       additional_security_group_ids = [aws_security_group.worker_group_mgmt_one.id]
     },
     {
       name                          = "worker-group-2"
       instance_type                 = "t2.medium"
-      additional_userdata           = "echo foo bar"
+      #additional_userdata           = "echo foo bar"
       additional_security_group_ids = [aws_security_group.worker_group_mgmt_two.id]
       asg_desired_capacity          = 1
     },

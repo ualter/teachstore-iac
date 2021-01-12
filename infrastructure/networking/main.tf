@@ -28,7 +28,7 @@ resource "aws_default_route_table" "main" {
     default_route_table_id = aws_vpc.main.default_route_table_id
 
     tags = {
-        Name           = "default"
+        Name           = "Route Table Public (Default)"
         "organization" = var.organization
     }
 }
@@ -42,6 +42,15 @@ resource "aws_route" "internet_gateway_ipv4" {
   destination_ipv6_cidr_block = "::/0"
   gateway_id                  = aws_internet_gateway.public.id
 }*/
+
+resource "aws_route_table" "route_table_private" {
+  vpc_id = aws_vpc.main.id
+ 
+  tags = {
+     Name           = "Route Table Private"
+     "organization" = var.organization
+  }
+}
 
 ############# Subnets
 data "aws_availability_zones" "available" {}
@@ -96,4 +105,16 @@ resource "aws_subnet" "private" {
     lifecycle {
       ignore_changes = [availability_zone]
     }
+}
+
+resource "aws_route_table_association" "private_assoc" {
+  count          = length(var.private_subnet_cidr_block)
+  subnet_id      = element(aws_subnet.private.*.id, count.index)
+  route_table_id = aws_route_table.route_table_private.id
+}
+
+resource "aws_route_table_association" "public_assoc" {
+  count          = length(var.public_subnet_cidr_block)
+  subnet_id      = element(aws_subnet.public.*.id, count.index)
+  route_table_id = aws_default_route_table.main.id
 }
