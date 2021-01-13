@@ -1,6 +1,6 @@
-output "cluster_name" {
-  description = "EKS Cluster Name"
-  value       = var.cluster_name
+output "cluster_id" {
+  description = "EKS cluster ID."
+  value       = module.eks.cluster_id
 }
 
 output "cluster_endpoint" {
@@ -23,3 +23,7 @@ output "config_map_aws_auth" {
   value       = module.eks.config_map_aws_auth
 }
 
+output "cluster_name" {
+  description = "EKS Cluster Name"
+  value       = var.cluster_name
+}

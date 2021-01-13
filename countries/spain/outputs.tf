@@ -1,6 +1,6 @@
 output "eks_cluster_name" {
   description = "EKS Cluster Name"
-  value       = local.cluster_name_teachstore
+  value       = local.teachstore_cluster_name
 }
 
 output "eks_cluster_endpoint" {

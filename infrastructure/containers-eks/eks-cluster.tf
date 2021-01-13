@@ -6,7 +6,7 @@ module "eks" {
   source          = "terraform-aws-modules/eks/aws"
   cluster_name    = var.cluster_name
   cluster_version = "1.18"
-  subnets         = var.vpc_private_subnets
+  subnets         = module.vpc.private_subnets
 
   tags = {
     Module       = "terraform-aws-eks"
@@ -15,7 +15,7 @@ module "eks" {
     Name         = var.name
   }
 
-  vpc_id = var.vpc_id
+  vpc_id = module.vpc.vpc_id
 
   worker_groups = [
     {
@@ -33,12 +33,6 @@ module "eks" {
       asg_desired_capacity          = 1
     },
   ]
-
-  worker_additional_security_group_ids = [aws_security_group.all_worker_mgmt.id]
-  
-  map_roles                            = var.map_roles
-  map_users                            = var.map_users
-  map_accounts                         = var.map_accounts
 }
 
 
