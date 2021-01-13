@@ -61,7 +61,7 @@ http://127.0.0.1:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kube
 
 In another terminal (do not close the ```kubectl proxy```), create the ClusterRoleBinding to use with an authorization token.
 ```bash
-~$ kubectl apply -f https://raw.githubusercontent.com/ualter/learn-terraform-provision-eks-cluster/master/kubernetes-dashboard-admin.rbac.yaml
+~$ kubectl apply -f infrastructure/containers-eks/kubernetes-dashboard-admin.rbac.yaml
 ```
 Generate authorization token
 ```bash
