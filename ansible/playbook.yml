@@ -1,0 +1,8 @@
+---
+- hosts: local
+  connection: local
+  tasks:
+    - name: Download Kubernetes Metrics Server
+      get_url:
+        url: https://codeload.github.com/kubernetes-sigs/metrics-server/tar.gz/v0.3.6
+        dest: ../

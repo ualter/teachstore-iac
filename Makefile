@@ -1,5 +1,6 @@
 .DEFAULT_GOAL:=help
 SHELL:=/bin/bash
+ANSIBLEDIR:=./ansible
 .PHONY: help build test upgrade run
 
 help:  ## Display this help
@@ -35,7 +36,14 @@ kubectl-config-aws: ## Config Kubectl with the EKS AWS Cluster
 	aws eks --region $$(terraform output region_spain | sed -e 's/^"//' -e 's/"$$//') update-kubeconfig --name $$(terraform output eks_cluster_name | sed -e 's/^"//' -e 's/"$$//')
 
 eks-endpoint: ## Show the EKS Cluster Endpoint at AWS
-	terraform output eks_cluster_endpoint	
+	terraform output eks_cluster_endpoint
+
+ansible_down_req: ## Check and Downbload Ansible requirements (roles and collections)
+	ansible-galaxy install -r $(ANSIBLEDIR)/requirements.yml 
+	ansible-galaxy collection install -r $(ANSIBLEDIR)/requirements.yml
+
+ansible_playbook: ansible_down_req ## Run Ansible playbook with the Software basic installments
+	ansible-playbook -i ./ansible/hosts ./ansible/playbook.yml
 
 check-env: # Check environment variables necessary to this Terraform IaC Project
 ifndef ENVIRONMENT
