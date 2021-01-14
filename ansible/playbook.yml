@@ -1,8 +1,32 @@
 ---
-- hosts: local
+- name: Download Kubernetes Metrics Server
+  hosts: local
   connection: local
+  vars:
+    - metrics_server_version: v0.3.6
+    - metrics_server_file_name: metrics-server-{{metrics_server_version}}.tar.gz
+    - tmp_dir: tmp_metrics_server_version-{{metrics_server_version}}
   tasks:
-    - name: Download Kubernetes Metrics Server
+    - name: Download K8s Metrics Server version {{metrics_server_version}}
       get_url:
-        url: https://codeload.github.com/kubernetes-sigs/metrics-server/tar.gz/v0.3.6
-        dest: ../
+        url: https://codeload.github.com/kubernetes-sigs/metrics-server/tar.gz/{{metrics_server_version}}
+        dest: ../{{metrics_server_file_name}}
+    #- name: "Metrics Server Version Downloaded"
+    #  debug:
+    #    msg: "The operating system is {{ metrics_server_version }}"
+    - name: Clean {{tmp_dir}} directory
+      file:
+        state: absent
+        path: "../{{ tmp_dir }}/"
+    - name: Creates {{tmp_dir}} directory
+      file:
+        path: ../{{ tmp_dir }}
+        state: directory
+    - name: Extracting {{metrics_server_file_name}} to {{tmp_dir}}
+      ansible.builtin.unarchive:
+        src: ../{{metrics_server_file_name}}
+        dest: ../{{ tmp_dir }}
+    - name: Delete {{metrics_server_file_name}}
+      file:
+        path: ../{{metrics_server_file_name}}
+        state: absent
