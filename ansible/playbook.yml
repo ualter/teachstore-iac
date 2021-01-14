@@ -48,9 +48,20 @@
         state: present
         src: "{{item.path}}"
       with_items: "{{ result_of_find.files }}"
+    # List the Deployments
+    #- name: Get a list of Services objects
+    #  community.kubernetes.k8s_info:
+    #    api_version: v1
+    #    kind: Deployment
+    #    namespace: kube-system
+    #  register: service_list  
+    #- name: List of Services
+    #  debug:
+    #    msg: "{{ item }}"
+    #  with_items: 
+    #    - "{{ service_list }}"
 
-
-- name: Finalizing
+- name: Finalizing (Cleaning up...)
   hosts: local
   connection: local
   tasks:
