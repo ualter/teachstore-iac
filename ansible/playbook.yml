@@ -1,19 +1,9 @@
 ---
-- name: Download Kubernetes Metrics Server
+
+- name: Preparing
   hosts: local
   connection: local
-  vars:
-    - metrics_server_version: v0.3.6
-    - metrics_server_file_name: metrics-server-{{metrics_server_version}}.tar.gz
-    - tmp_dir: tmp_metrics_server_version-{{metrics_server_version}}
   tasks:
-    - name: Download K8s Metrics Server version {{metrics_server_version}}
-      get_url:
-        url: https://codeload.github.com/kubernetes-sigs/metrics-server/tar.gz/{{metrics_server_version}}
-        dest: ../{{metrics_server_file_name}}
-    #- name: "Metrics Server Version Downloaded"
-    #  debug:
-    #    msg: "The operating system is {{ metrics_server_version }}"
     - name: Clean {{tmp_dir}} directory
       file:
         state: absent
@@ -22,6 +12,17 @@
       file:
         path: ../{{ tmp_dir }}
         state: directory
+
+- name: Download Kubernetes Metrics Server
+  hosts: local
+  connection: local
+  vars:
+    - metrics_server_file_name: metrics-server-{{metrics_server_version}}.tar.gz
+  tasks:
+    - name: Download K8s Metrics Server version {{metrics_server_version}}
+      get_url:
+        url: https://codeload.github.com/kubernetes-sigs/metrics-server/tar.gz/{{metrics_server_version}}
+        dest: ../{{metrics_server_file_name}}
     - name: Extracting {{metrics_server_file_name}} to {{tmp_dir}}
       ansible.builtin.unarchive:
         src: ../{{metrics_server_file_name}}
@@ -30,3 +31,20 @@
       file:
         path: ../{{metrics_server_file_name}}
         state: absent
+
+- name: Install Kubernetes Metrics Server on Kubernetes
+  hosts: local
+  connection: local
+  collections:
+    - community.kubernetes
+  tasks:
+    - name: Reading all Metrics Server YAMLs to install it in K8s
+      find:
+        paths: ../{{ tmp_dir }}/metrics-server-0.3.6/deploy/1.8+/
+        recurse: yes
+      register: result_of_find
+    - name: Deploying Metrics Server at K8s
+      community.kubernetes.k8s:
+        state: present
+        src: "{{item.path}}"
+      with_items: "{{ result_of_find.files }}"

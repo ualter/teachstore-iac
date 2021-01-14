@@ -38,7 +38,15 @@ kubectl-config-aws: ## Config Kubectl with the EKS AWS Cluster
 eks-endpoint: ## Show the EKS Cluster Endpoint at AWS
 	terraform output eks_cluster_endpoint
 
-ansible_down_req: ## Check and Downbload Ansible requirements (roles and collections)
+ansible_python_req: ## Check Ansible Kubernetes Collections Python Requirements
+	@if pip list | grep openshift; then\
+        echo "Python package openshift installed";\
+	else\
+	    echo "Python Package required for Ansible, not installed, installing now...";\
+		pip install --upgrade -r ./ansible/python-requirements.txt;\
+    fi
+
+ansible_down_req: ansible_python_req ## Check and Downbload Ansible requirements (roles and collections)
 	ansible-galaxy install -r $(ANSIBLEDIR)/requirements.yml 
 	ansible-galaxy collection install -r $(ANSIBLEDIR)/requirements.yml
 

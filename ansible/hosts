@@ -1,5 +1,8 @@
-[local]
-127.0.0.1 ansible_user=ualter
-
-[local:vars]
-ansible_python_interpreter=/usr/bin/python3
+local:
+  hosts:
+    127.0.0.1
+  vars:
+    ansible_user: ualter
+    ansible_python_interpreter: /usr/bin/python3
+    metrics_server_version: v0.3.6
+    tmp_dir: tmp_metrics_server_version-{{metrics_server_version}}
