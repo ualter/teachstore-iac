@@ -48,3 +48,13 @@
         state: present
         src: "{{item.path}}"
       with_items: "{{ result_of_find.files }}"
+
+
+- name: Finalizing
+  hosts: local
+  connection: local
+  tasks:
+    - name: Clean {{tmp_dir}} directory
+      file:
+        state: absent
+        path: "../{{ tmp_dir }}/"
