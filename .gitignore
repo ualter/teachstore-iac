@@ -40,3 +40,4 @@ tfplan
 
 ansible/ansible_roles
 ansible/ansible_collections
+tmp_metrics_server_version-v0.3.6
