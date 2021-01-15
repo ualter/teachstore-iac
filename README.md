@@ -57,7 +57,7 @@ $ make ansible_k8sinfo
 $ kubectl proxy 
 #### Open in Browser
 http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/#/overview?namespace=default
-#### Use token from make ansible_k8sinfo
+#### Use token from "make ansible_k8sinfo" for authorization
 ```
 #### Check whatelse all you can do:
 ```bash
