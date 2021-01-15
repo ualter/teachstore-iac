@@ -2,7 +2,7 @@
 ## Terraform & Ansible & EKS
 ![dashboard](https://raw.githubusercontent.com/ualter/teachstore-iac/master/images/dashboard.png)
 ![eks cluster](https://raw.githubusercontent.com/ualter/teachstore-iac/master/images/overview-eks.png)
-![eks workloads](https://github.com/ualter/teachstore-iac/blob/master/images/overview-eks.png)
+![eks workloads](https://raw.githubusercontent.com/ualter/teachstore-iac/master/images/workloads.png)
 ---
 ## *Before start...* Prerequisites
 - AWS CLI - Installed & Configured
