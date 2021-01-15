@@ -26,6 +26,7 @@ Here we start to create the environment itself, for the AWS EKS. This process ca
 1.2.1) Create the State (donwload modules, plugins, etc.).
 ```bash
 #### Inside the main directory (project root)
+$ export ENVIRONMENT=dev   # Which environment?
 $ make init
 ```
 1.2.2) Create the Plan (to check first what it's gonna be created)
