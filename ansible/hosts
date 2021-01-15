@@ -5,4 +5,5 @@ local:
     ansible_user: ualter
     ansible_python_interpreter: /usr/bin/python3
     metrics_server_version: v0.3.6
-    tmp_dir: tmp_ansible-{{metrics_server_version}}
+    tmp_dir: tmp_ansible
+    url_dashboard: https://raw.githubusercontent.com/kubernetes/dashboard/v2.0.0-beta8/aio/deploy/recommended.yaml

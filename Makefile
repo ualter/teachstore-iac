@@ -53,6 +53,9 @@ ansible_down_req: ansible_python_req ## Check and Downbload Ansible requirements
 ansible_playbook: ansible_down_req ## Run Ansible playbook with the Software basic installments
 	ansible-playbook -i ./ansible/hosts ./ansible/playbook.yml
 
+ansible_k8sinfo: ## Show Info of K8s EKS, token dashboard URL, etc.
+	ansible-playbook -i ./ansible/hosts ./ansible/playbook.yml  --tags "k8sinfo"
+
 check-env: # Check environment variables necessary to this Terraform IaC Project
 ifndef ENVIRONMENT
 	$(error the environment variable $$ENVIRONMENT is undefined, please set it before: "export ENVIRONMENT=dev")

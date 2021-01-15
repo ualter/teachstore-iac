@@ -61,6 +61,48 @@
     #  with_items: 
     #    - "{{ service_list }}"
 
+- name: Install Kubernetes Dashboard
+  hosts: local
+  connection: local
+  collections:
+    - community.kubernetes
+  tasks:
+    - name: Download K8s Dashboard {{url_dashboard}}
+      get_url:
+        url: "{{ url_dashboard }}"
+        dest: ../{{ tmp_dir }}/k8s_dashboard_recommended.yaml
+    - name: Deploying Dashboard at K8s
+      community.kubernetes.k8s:
+        state: present
+        src: ../{{ tmp_dir }}/k8s_dashboard_recommended.yaml
+    - name: Deploying Dashboard ClusterRoleBinding to use with Token Authentication
+      community.kubernetes.k8s:
+        state: present
+        src: ../infrastructure/containers-eks/kubernetes-dashboard-admin.rbac.yaml
+
+- name: Retrieving K8s Info
+  hosts: local
+  connection: local
+  tasks:
+    - name: Token for Authorization
+      shell: |
+        kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep service-controller-token | awk '{print $1}')
+      register: token
+      tags:
+        - k8sinfo
+    - name: URL Dashboard
+      debug:
+        msg:
+          - "Execute: kubectl proxy" 
+          - "URL for Dashboard: http://127.0.0.1:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/"  
+      tags:
+        - k8sinfo    
+    - name: Token
+      debug:
+        msg: "{{ token.stdout_lines }}"
+      tags:
+        - k8sinfo  
+
 - name: Finalizing (Cleaning up...)
   hosts: local
   connection: local
