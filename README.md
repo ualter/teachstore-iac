@@ -1,6 +1,6 @@
 # IaC - Infrastructure on AWS
 ## Terraform & Ansible & EKS
-
+(https://raw.githubusercontent.com/ualter/teachstore-iac/master/images/dashboard.png)
 ---
 ## *Before start...* Prerequisites
 - AWS CLI - Installed & Configured
