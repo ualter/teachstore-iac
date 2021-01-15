@@ -45,7 +45,6 @@ $ make help
 
 2.1) Install Metrics Server and Dashboard on AWS EKS
 ```bash
-$ cd ansible
 $ make ansible_playbook
 ```
 2.2) Show EKS K8s info, when you need to recover it
