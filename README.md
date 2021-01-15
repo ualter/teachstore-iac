@@ -15,7 +15,7 @@
 ## 1) Terraform 
 
 ### 1.1) First...  the Genesis, *only once!*
-First prepare the terraform state environment, **this step should be ran only once**. It will create and prepare all AWS required Services (S3, DynamoDB), necessary to store, share and the locking management of the Terraform environment created.
+First prepare the terraform state environment, **this step should be ran only once**. It will create and prepare all AWS required Services (S3, DynamoDB), necessary to store, share and the locking management of the Terraform state environment created.
 ```bash
 $ cd genesis
 $ export TF_VAR_environment=dev
