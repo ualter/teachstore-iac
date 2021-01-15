@@ -2,6 +2,13 @@
 ## Terraform & Ansible & EKS
 
 ---
+## *Before start...* Prerequisites
+- AWS CLI - Installed & Configured
+- AWS IAM Authenticator - Installed
+  - https://docs.aws.amazon.com/eks/latest/userguide/install-aws-iam-authenticator.html
+- kubectl
+- wget
+---
 
 ## 1) Terraform 
 
