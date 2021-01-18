@@ -38,7 +38,7 @@ kubectl-config-aws: ## Config Kubectl with the EKS AWS Cluster
 eks-endpoint: ## Show the EKS Cluster Endpoint at AWS
 	terraform output eks_cluster_endpoint
 
-ansible_python_req: ## Check Ansible Kubernetes Collections Python Requirements
+ansible_python_req: ## Check Ansible Kubernetes Collections Python Requirements (Internal use)
 	@if pip list | grep openshift; then\
         echo "Python package openshift installed";\
 	else\
@@ -46,12 +46,12 @@ ansible_python_req: ## Check Ansible Kubernetes Collections Python Requirements
 		pip install --upgrade -r ./ansible/python-requirements.txt;\
     fi
 
-ansible_down_req: ansible_python_req ## Check and Downbload Ansible requirements (roles and collections)
+ansible_down_req: ansible_python_req ## Check and Downbload Ansible requirements (roles and collections) (Internal use)
 	ansible-galaxy install -r $(ANSIBLEDIR)/requirements.yml 
 	ansible-galaxy collection install -r $(ANSIBLEDIR)/requirements.yml
 
-ansible_playbook: ansible_down_req ## Run Ansible playbook with the Software basic installments
-	ansible-playbook -i ./ansible/hosts ./ansible/playbook.yml
+ansible_basic_soft: ansible_down_req kubectl-config-aws ## Ansible playbook to install basic softwares in K8s (Metrics Server, Dashboard)
+	ansible-playbook -i ./ansible/hosts ./ansible/k8s-basic-software-playbook.yml
 
 ansible_k8sinfo: ## Show Info of K8s EKS, token dashboard URL, etc.
 	ansible-playbook -i ./ansible/hosts ./ansible/playbook.yml  --tags "k8sinfo"

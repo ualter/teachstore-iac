@@ -65,7 +65,7 @@ $ make kubectl-config-aws
 
 ## 2) Ansible
 
-2.1) Playbook: **playbook.yaml**
+2.1) Playbook: **k8s-basic-software-playbook.yaml**
 
 In this Ansible playbook, we perform some basic software configuration in our AWS environment:
 - **Metrics Server** 
