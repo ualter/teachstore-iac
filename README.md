@@ -61,13 +61,9 @@ This is important, otherwise your kubectl commands will not work(directed) on EK
 $ make kubectl-config-aws
 ```
 
-#### Check whatelse you can do:
-```bash
-$ make help
-```
 ---
-## 2) Ansible
 
+## 2) Ansible
 
 2.1) Playbook: **playbook.yaml**
 
@@ -93,6 +89,9 @@ $ kubectl proxy
 http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/#/overview?namespace=default
 #### Use token from "make ansible_k8sinfo" for authorization
 ```
+
+---
+
 #### Check whatelse you can do:
 ```bash
 $ make help
