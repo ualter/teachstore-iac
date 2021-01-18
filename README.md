@@ -13,6 +13,21 @@
 ---
 
 ## 1) Terraform 
+Here, we create and manage all the infrastructure resources in AWS: 
+- **Networking** 
+  - VPC
+  - Subnets
+  - Route Tables
+  - Internet Gateway
+  - NATGateways
+  - Elastic IPs
+- **Compute**
+  - EC2s
+  - Security Groups
+  - Auto Scaling Groups
+  - Launch Configurations
+- **Containers**
+  - EKS Cluster
 
 ### 1.1) First...  the Genesis, *only once!*
 First prepare the terraform state environment, **this step should be ran only once**. It will create and prepare all AWS required Services (S3, DynamoDB), necessary to store, share and the locking management of the Terraform state environment created.
@@ -53,15 +68,24 @@ $ make help
 ---
 ## 2) Ansible
 
-2.1) Install Metrics Server and Dashboard on AWS EKS
+
+2.1) Playbook: **playbook.yaml**
+
+In this Ansible playbook, we perform some basic software configuration in our AWS environment:
+- **Metrics Server** 
+  - Download and install Metrics Server on Kubernetes (EKS)
+- **Dashboard**
+  - Download and install Kubernetes Dashboard
+
+2.1.1) Install Metrics Server and Dashboard on AWS EKS
 ```bash
 $ make ansible_playbook
 ```
-2.2) Show EKS K8s info, when you need to recover it
+2.1.2) Show EKS K8s info, when you need to recover it
 ```bash
 $ make ansible_k8sinfo
 ```
-2.3) Access Dashboard using kubectl proxy via API Server
+2.1.3) Access Dashboard using kubectl proxy via API Server
 ```bash
 #### Let it open (shell session)
 $ kubectl proxy 
