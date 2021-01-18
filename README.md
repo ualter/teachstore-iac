@@ -75,7 +75,7 @@ In this Ansible playbook, we perform some basic software configuration in our AW
 
 2.1.1) Install Metrics Server and Dashboard on AWS EKS
 ```bash
-$ make ansible_playbook
+$ make ansible_basic_soft
 ```
 2.1.2) Show EKS K8s info, when you need to recover it
 ```bash
