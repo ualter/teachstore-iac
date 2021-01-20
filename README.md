@@ -1,8 +1,8 @@
 # IaC - Infrastructure on AWS
 ## Terraform & Ansible & EKS
-![dashboard](https://raw.githubusercontent.com/ualter/teachstore-iac/master/images/dashboard.png)
-![eks cluster](https://raw.githubusercontent.com/ualter/teachstore-iac/master/images/overview-eks.png)
-![eks workloads](https://raw.githubusercontent.com/ualter/teachstore-iac/master/images/workloads.png)
+![dashboard](docs/images/dashboard.png)
+![eks cluster](docs/images/overview-eks.png)
+![eks workloads](docs/images/workloads.png)
 ---
 ## *Before start...* Prerequisites
 - AWS CLI - Installed & Configured
