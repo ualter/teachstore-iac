@@ -78,7 +78,7 @@
     - name: Deploying Dashboard ClusterRoleBinding to use with Token Authentication
       community.kubernetes.k8s:
         state: present
-        src: ../infrastructure/containers-eks/kubernetes-dashboard-admin.rbac.yaml
+        src: ../modules/infrastructure/containers-eks/kubernetes-dashboard-admin.rbac.yaml
 
 - name: Retrieving K8s Info
   hosts: local

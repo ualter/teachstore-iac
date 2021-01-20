@@ -37,7 +37,7 @@ $ export TF_VAR_environment=dev
 $ make init
 $ make apply
 ```
-### 1.2) Start Terraform Infrastructure "Workspace"
+### 1.2) Start Terraform Infrastructure Environment
 Here we start to create the environment itself, for the AWS EKS. This process can be (re)executed anytime and as many times as we need, (re)creating/updating all the environment infrastructure.
 
 1.2.1) Create the State (donwload modules, plugins, etc.).

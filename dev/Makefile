@@ -1,6 +1,6 @@
 .DEFAULT_GOAL:=help
 SHELL:=/bin/bash
-ANSIBLEDIR:=./ansible
+ANSIBLEDIR:=../ansible
 .PHONY: help build test upgrade run
 
 help:  ## Display this help
@@ -9,8 +9,7 @@ help:  ## Display this help
 init: check-env ## Init terraform plan, firing: "terraform init"
 	terraform init -backend-config="key=${TF_VAR_environment}/infrastructure.tfstate" \
 	               -backend-config="dynamodb_table=terraform_${TF_VAR_environment}_remote_state_lock" \
-	               -get=true -lock=true \
-	               -var-file="${TF_VAR_environment}.tfvars"
+	               -get=true -lock=true
 
 plan: check-env ## terraform plan
 	terraform plan -out tfplan
@@ -33,8 +32,8 @@ validate: ## Check whether the configuration is valid
 destroy: ## Destroy previously-created infrastructure "terraform destroy"
 	terraform destroy
 	
-kubectl-config-aws: ## Config Kubectl with the EKS AWS Cluster
-	aws eks --region $$(terraform output region_spain | sed -e 's/^"//' -e 's/"$$//') update-kubeconfig --name $$(terraform output eks_cluster_name | sed -e 's/^"//' -e 's/"$$//')
+kubectl-config-aws: ## Config Kubectl to point to AWS EKS Cluster of Application's TeachStore
+	aws eks --region $$(terraform output region_spain | sed -e 's/^"//' -e 's/"$$//') update-kubeconfig --name $$(terraform output teachstore_eks_cluster_name | sed -e 's/^"//' -e 's/"$$//')
 
 eks-endpoint: ## Show the EKS Cluster Endpoint at AWS
 	terraform output eks_cluster_endpoint
@@ -52,10 +51,10 @@ ansible_down_req: ansible_python_req ## Check and Downbload Ansible requirements
 	ansible-galaxy collection install -r $(ANSIBLEDIR)/requirements.yml
 
 ansible_basic_soft: ansible_down_req kubectl-config-aws ## Ansible playbook to install basic softwares in K8s (Metrics Server, Dashboard)
-	ansible-playbook -i ./ansible/hosts ./ansible/k8s-basic-software-playbook.yml
+	ansible-playbook -i  $(ANSIBLEDIR)/hosts $(ANSIBLEDIR)/k8s-basic-software-playbook.yml
 
 ansible_k8sinfo: ## Show Info of K8s EKS, token dashboard URL, etc.
-	ansible-playbook -i ./ansible/hosts ./ansible/playbook.yml  --tags "k8sinfo"
+	ansible-playbook -i  $(ANSIBLEDIR)/hosts $(ANSIBLEDIR)/k8s-basic-software-playbook.yml  --tags "k8sinfo"
 
 check-env: # Check environment variables necessary to this Terraform IaC Project
 ifndef TF_VAR_environment
