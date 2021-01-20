@@ -7,9 +7,10 @@ help:  ## Display this help
 	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make \033[36m\033[33m\n\nTargets:\033[0m\n"} /^[a-zA-Z_-]+:.*?##/ { printf "  \033[36m%-25s\033[33m %s\n", $$1, $$2 }' $(MAKEFILE_LIST)
 
 init: check-env ## Init terraform plan, firing: "terraform init"
-	terraform init -backend-config="key=${ENVIRONMENT}/infrastructure.tfstate" \
-	               -backend-config="dynamodb_table=terraform_${ENVIRONMENT}_remote_state_lock" \
-	               -get=true -lock=true
+	terraform init -backend-config="key=${TF_VAR_environment}/infrastructure.tfstate" \
+	               -backend-config="dynamodb_table=terraform_${TF_VAR_environment}_remote_state_lock" \
+	               -get=true -lock=true \
+	               -var-file="${TF_VAR_environment}.tfvars"
 
 plan: check-env ## terraform plan
 	terraform plan -out tfplan
@@ -57,6 +58,6 @@ ansible_k8sinfo: ## Show Info of K8s EKS, token dashboard URL, etc.
 	ansible-playbook -i ./ansible/hosts ./ansible/playbook.yml  --tags "k8sinfo"
 
 check-env: # Check environment variables necessary to this Terraform IaC Project
-ifndef ENVIRONMENT
-	$(error the environment variable $$ENVIRONMENT is undefined, please set it before: "export ENVIRONMENT=dev")
+ifndef TF_VAR_environment
+	$(error the terraform environment variable TF_VAR_environment is undefined, please set it before. Example: "export TF_VAR_environment=dev")
 endif 
