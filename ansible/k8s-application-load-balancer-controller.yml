@@ -1,0 +1,14 @@
+- name: List S3 Buckets
+  hosts: local
+  connection: local
+  vars:
+    - metrics_server_file_name: metrics-server-{{metrics_server_version}}.tar.gz
+  tasks:
+    - name: List S3 Buckets
+      command: >
+        aws s3 ls
+          --region eu-central-1
+      register: s3
+    - name: list
+      debug:
+        msg: "{{ s3.stdout_lines }}"
