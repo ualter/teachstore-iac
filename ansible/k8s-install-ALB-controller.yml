@@ -1,12 +1,21 @@
 ##
-## Very new, alpha version! 
-## Need more testing in different conditions
-## 
+## AWS Load Balancer Controller
+## ============================
+##
+## The controller provisions:
+##  - An AWS Application Load Balancer (ALB) when you create a Kubernetes Ingress.
+##  - An AWS Network Load Balancer (NLB) when you create a Kubernetes Service of type LoadBalancer.
+##
+## source: https://docs.aws.amazon.com/eks/latest/userguide/aws-load-balancer-controller.html
+##
 
-- name: Install ALB Controller
+- name: Install ALB Controller in a EKS Cluster
   hosts: local
   connection: local
   tasks:
+    #
+    # Determine whether you have an existing IAM OIDC provider for your cluster.
+    # 
     - name: Get the OIDC Cluster Name
       shell: >
         aws eks describe-cluster --name {{ eks_cluster }} --query "cluster.identity.oidc.issuer" --output text | sed -e 's/^.*\/id\///g'
@@ -36,6 +45,9 @@
         url: https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.1.0/docs/install/iam_policy.json
         dest: ./iam_policy.json
 
+    #
+    # Create an IAM policy using the policy downloaded 
+    #
     - name: Check if the IAM Policy already exists
       shell: >
          aws iam list-policies | grep AWSLoadBalancerControllerIAMPolicy | grep arn | sed -e 's/"Arn": "//g' | sed -e 's/\s//g' | sed -e 's/",//g'    
@@ -49,11 +61,14 @@
       when: arn_iam_policy_temp1.changed
     - set_fact: arn_iam_policy="{{arn_iam_policy_temp2.stdout}}"
       when: arn_iam_policy_temp2.changed    
-
     - name: This is your IAM Policy ARN
       debug:
         msg: "{{ arn_iam_policy }}"
 
+    #
+    # Create an IAM role and annotate the Kubernetes service account named aws-load-balancer-controller 
+    # in the kube-system namespace for the AWS Load Balancer Controller
+    #
     - name: Create an IAM role and annotate the Kubernetes service account named aws-load-balancer-controller
       shell: >
          eksctl create iamserviceaccount \
@@ -63,6 +78,8 @@
                 --attach-policy-arn={{ arn_iam_policy }} \
                 --override-existing-serviceaccounts \
                 --approve
+       # eksctl get iamserviceaccount --cluster teachstore-eks-SiALeNT2   (command to query the relation K8s Service Account vs. IAM Role)         
+       # kubectl describe sa aws-load-balancer-controller -n kube-system  (See Annotations: eks.amazonaws.com/role-arn)
     - name: Add EKS Repository to Helm
       shell: >                
          helm repo add eks https://aws.github.io/eks-charts
