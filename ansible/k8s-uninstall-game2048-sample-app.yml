@@ -1,0 +1,7 @@
+- name: Install ALB Controller
+  hosts: local
+  connection: local
+  tasks:
+    - name: Uninstall Game 208 Sample App
+      shell: >
+        kubectl delete -f https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.1.0/docs/examples/2048/2048_full.yaml

@@ -4,7 +4,7 @@ ANSIBLEDIR:=../ansible
 .PHONY: help build test upgrade run
 
 help:  ## Display this help
-	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make \033[36m\033[33m\n\nTargets:\033[0m\n"} /^[a-zA-Z_-]+:.*?##/ { printf "  \033[36m%-25s\033[33m %s\n", $$1, $$2 }' $(MAKEFILE_LIST)
+	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make \033[36m\033[33m\n\nTargets:\033[0m\n"} /^[a-zA-Z_-]+:.*?##/ { printf "  \033[36m%-30s\033[33m %s\n", $$1, $$2 }' $(MAKEFILE_LIST)
 
 init: check-env ## Init terraform plan, firing: "terraform init"
 	terraform init -backend-config="key=${TF_VAR_environment}/infrastructure.tfstate" \
@@ -59,6 +59,14 @@ ansible_k8sinfo: ## Show Info of K8s EKS, token dashboard URL, etc.
 ansible_alb_controller: ## Install Application Balance Controller at EKS Cluster
 	$(eval eks_cluster:=$(shell  kubectl config current-context | sed -e 's/^.*\///g'))
 	ansible-playbook -i  $(ANSIBLEDIR)/hosts $(ANSIBLEDIR)/k8s-install-ALB-controller.yml  --extra-vars="eks_cluster=$(eks_cluster)"
+
+ansible_install_sampleApp: ## Install Game 2048 Sample App (To test AWS ALB Controller)
+	$(eval eks_cluster:=$(shell  kubectl config current-context | sed -e 's/^.*\///g'))
+	ansible-playbook -i  $(ANSIBLEDIR)/hosts $(ANSIBLEDIR)/k8s-install-game2048-sample-app.yml  --extra-vars="eks_cluster=$(eks_cluster)"
+
+ansible_uninstall_sampleApp: ## Uninstall Game 2048 Sample App (Used to test AWS ALB Controller)
+	$(eval eks_cluster:=$(shell  kubectl config current-context | sed -e 's/^.*\///g'))
+	ansible-playbook -i  $(ANSIBLEDIR)/hosts $(ANSIBLEDIR)/k8s-uninstall-game2048-sample-app.yml  --extra-vars="eks_cluster=$(eks_cluster)"
 
 check-env: # Check environment variables necessary to this Terraform IaC Project
 ifndef TF_VAR_environment
