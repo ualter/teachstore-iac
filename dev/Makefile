@@ -32,7 +32,7 @@ validate: ## Check whether the configuration is valid
 destroy: ## Destroy previously-created infrastructure "terraform destroy"
 	terraform destroy
 	
-kubectl-config-aws: ## Config Kubectl to point to AWS EKS Cluster of Application's TeachStore
+kubectl-teachstore-config: ## Config Kubectl to point to AWS EKS Cluster of Application's TeachStore
 	aws eks --region $$(terraform output region_spain | sed -e 's/^"//' -e 's/"$$//') update-kubeconfig --name $$(terraform output teachstore_eks_cluster_name | sed -e 's/^"//' -e 's/"$$//')
 
 eks-endpoint: ## Show the EKS Cluster Endpoint at AWS
@@ -50,11 +50,15 @@ ansible_down_req: ansible_python_req ## Check and Downbload Ansible requirements
 	ansible-galaxy install -r $(ANSIBLEDIR)/requirements.yml 
 	ansible-galaxy collection install -r $(ANSIBLEDIR)/requirements.yml
 
-ansible_basic_soft: ansible_down_req kubectl-config-aws ## Ansible playbook to install basic softwares in K8s (Metrics Server, Dashboard)
-	ansible-playbook -i  $(ANSIBLEDIR)/hosts $(ANSIBLEDIR)/k8s-basic-software-playbook.yml
+ansible_basic_soft: ansible_down_req kubectl-teachstore-config ## Ansible playbook to install basic softwares at K8s (Metrics Server, Dashboard)
+	ansible-playbook -i  $(ANSIBLEDIR)/hosts $(ANSIBLEDIR)/k8s-install-basic-software.yml
 
 ansible_k8sinfo: ## Show Info of K8s EKS, token dashboard URL, etc.
-	ansible-playbook -i  $(ANSIBLEDIR)/hosts $(ANSIBLEDIR)/k8s-basic-software-playbook.yml  --tags "k8sinfo"
+	ansible-playbook -i  $(ANSIBLEDIR)/hosts $(ANSIBLEDIR)/k8s-install-basic-software.yml --tags "k8sinfo"
+
+ansible_alb_controller: ## Install Application Balance Controller at EKS Cluster
+	$(eval eks_cluster:=$(shell  kubectl config current-context | sed -e 's/^.*\///g'))
+	ansible-playbook -i  $(ANSIBLEDIR)/hosts $(ANSIBLEDIR)/k8s-install-ALB-controller.yml  --extra-vars="eks_cluster=$(eks_cluster)"
 
 check-env: # Check environment variables necessary to this Terraform IaC Project
 ifndef TF_VAR_environment

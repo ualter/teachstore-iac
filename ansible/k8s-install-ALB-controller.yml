@@ -1,0 +1,86 @@
+- name: Install ALB Controller
+  hosts: local
+  connection: local
+  tasks:
+    - name: Get the OIDC Cluster Name
+      shell: >
+        aws eks describe-cluster --name {{ eks_cluster }} --query "cluster.identity.oidc.issuer" --output text | sed -e 's/^.*\/id\///g'
+      register: oidc_cluster
+
+    - name: Check If the IAM OIDC Provider exists for the EKS Cluster {{ eks_cluster }}
+      shell: >
+         aws iam list-open-id-connect-providers | grep {{ oidc_cluster.stdout }}
+      ignore_errors: yes   
+      register: oidc_cluster_iamprovider   
+      failed_when: "oidc_cluster_iamprovider.rc == 2"
+      check_mode: no
+      changed_when: false
+
+    - name: Show the OIDC Identity Provider for the EKS cluster {{ oidc_cluster.stdout }} (if exists, otherwise will skip)
+      debug:
+        msg: "{{ oidc_cluster_iamprovider.stdout }}"
+      when: "oidc_cluster_iamprovider.rc == 0"   
+
+    - name: Create the OIDC Identity Provider for the EKS cluster {{ oidc_cluster.stdout }} (if DON'T exists yet, otherwise skip it)
+      shell: >
+         eksctl utils associate-iam-oidc-provider --cluster {{ eks_cluster }} --approve
+      when: "oidc_cluster_iamprovider.rc != 0"
+
+    - name: Download the IAM Policy for the AWS Load Balancer Controller
+      get_url:
+        url: https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.1.0/docs/install/iam_policy.json
+        dest: ./iam_policy.json
+
+    - name: Check if the IAM Policy already exists
+      shell: >
+         aws iam list-policies | grep AWSLoadBalancerControllerIAMPolicy | grep arn | sed -e 's/"Arn": "//g' | sed -e 's/\s//g' | sed -e 's/",//g'    
+      register: arn_iam_policy_temp1   
+    - name: Create the IAM Policy
+      shell: >
+         aws iam create-policy --policy-name AWSLoadBalancerControllerIAMPolicy --policy-document file://iam_policy.json
+      when: "arn_iam_policy_temp1.rc != 0"   
+      register: arn_iam_policy_temp2
+    - set_fact: arn_iam_policy="{{arn_iam_policy_temp1.stdout}}"
+      when: arn_iam_policy_temp1.changed
+    - set_fact: arn_iam_policy="{{arn_iam_policy_temp2.stdout}}"
+      when: arn_iam_policy_temp2.changed    
+
+    - name: This is your IAM Policy ARN
+      debug:
+        msg: "{{ arn_iam_policy }}"
+
+    - name: Create an IAM role and annotate the Kubernetes service account named aws-load-balancer-controller
+      shell: >
+         eksctl create iamserviceaccount \
+                --cluster={{ eks_cluster }} \
+                --namespace=kube-system \
+                --name=aws-load-balancer-controller \
+                --attach-policy-arn={{ arn_iam_policy }} \
+                --override-existing-serviceaccounts \
+                --approve
+    - name: Add EKS Repository to Helm
+      shell: >                
+         helm repo add eks https://aws.github.io/eks-charts
+
+    - name: Install the TargetGroupBinding CRDs
+      shell: >                
+         kubectl apply -k "github.com/aws/eks-charts/stable/aws-load-balancer-controller//crds?ref=master"
+
+    - name: Update the the AWS Load Balancer controller using Helm
+      shell: >                
+         helm upgrade -i aws-load-balancer-controller eks/aws-load-balancer-controller \
+              --set clusterName={{ eks_cluster }}  \
+              --set serviceAccount.create=false \
+              --set serviceAccount.name=aws-load-balancer-controller \
+              -n kube-system
+
+    - name: Checking
+      shell: >
+         kubectl get deployment -n kube-system aws-load-balancer-controller
+      register: controller_status
+    
+    - name: Status of Controller
+      debug:
+        msg: "{{ controller_status.stdoutlines }}"
+     
+     
