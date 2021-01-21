@@ -58,15 +58,15 @@ ansible_k8sinfo: ## Show Info of K8s EKS, token dashboard URL, etc.
 
 ansible_alb_controller: ## Install Application Balance Controller at EKS Cluster
 	$(eval eks_cluster:=$(shell  kubectl config current-context | sed -e 's/^.*\///g'))
-	ansible-playbook -i  $(ANSIBLEDIR)/hosts $(ANSIBLEDIR)/k8s-install-ALB-controller.yml  --extra-vars="eks_cluster=$(eks_cluster)"
+	ansible-playbook -i  $(ANSIBLEDIR)/hosts $(ANSIBLEDIR)/k8s-install-ELB-controller.yml  --extra-vars="eks_cluster=$(eks_cluster)"
 
 ansible_install_sampleApp: ## Install Game 2048 Sample App (To test AWS ALB Controller)
 	$(eval eks_cluster:=$(shell  kubectl config current-context | sed -e 's/^.*\///g'))
-	ansible-playbook -i  $(ANSIBLEDIR)/hosts $(ANSIBLEDIR)/k8s-install-game2048-sample-app.yml  --extra-vars="eks_cluster=$(eks_cluster)"
+	ansible-playbook -i  $(ANSIBLEDIR)/hosts $(ANSIBLEDIR)/k8s-install-game2048-alb-test.yml  --extra-vars="eks_cluster=$(eks_cluster)"
 
 ansible_uninstall_sampleApp: ## Uninstall Game 2048 Sample App (Used to test AWS ALB Controller)
 	$(eval eks_cluster:=$(shell  kubectl config current-context | sed -e 's/^.*\///g'))
-	ansible-playbook -i  $(ANSIBLEDIR)/hosts $(ANSIBLEDIR)/k8s-uninstall-game2048-sample-app.yml  --extra-vars="eks_cluster=$(eks_cluster)"
+	ansible-playbook -i  $(ANSIBLEDIR)/hosts $(ANSIBLEDIR)/k8s-uninstall-game2048-alb-test.yml  --extra-vars="eks_cluster=$(eks_cluster)"
 
 check-env: # Check environment variables necessary to this Terraform IaC Project
 ifndef TF_VAR_environment
