@@ -10,7 +10,7 @@
   - https://docs.aws.amazon.com/eks/latest/userguide/install-aws-iam-authenticator.html
 - kubectl
 - wget
-- eksctl (this is needed if you're going to install the AWS Load Balancer Controller in EKS)
+- eksctl (needed if you're going to install the AWS Load Balancer Controller in EKS)
 ---
 
 ## 1) Terraform 
@@ -41,7 +41,7 @@ $ make apply
 ### 1.2) Start Terraform Infrastructure Environment
 Here we start to create the environment itself, for the AWS EKS. This process can be (re)executed anytime and as many times as we need, (re)creating/updating all the environment infrastructure.
 
-1.2.1) Create the State (donwload modules, plugins, etc.).
+1.2.1) Choose the environment (dev) and create the State (donwload modules, plugins, etc.).
 ```bash
 #### Inside the main directory (project root)
 $ cd dev
