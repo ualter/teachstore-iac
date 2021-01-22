@@ -1,6 +1,8 @@
 # IaC - Infrastructure on AWS
 ## Terraform & Ansible & EKS
 ![dashboard](docs/images/dashboard.png)
+![nodes](docs/images/Nodes.png)
+![pods](docs/images/Pods.png)
 ![eks cluster](docs/images/overview-eks.png)
 ![eks workloads](docs/images/workloads.png)
 ---
@@ -126,7 +128,7 @@ Playbook: **k8s-install-ELB-controller.yml**
 Here, in order to this playbook works, we need to have the ```eksctl``` tool installed.
 
 ```bash
-$ make ansible_alb_controller
+$ make ansible_elb_controller
 ```
 
 2.2.1) Testing AWS ALB with Game 2048 Sample Application
