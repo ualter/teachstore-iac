@@ -86,7 +86,7 @@ CURRENT   NAME                                                                 C
           minikube                                                             minikube                                                             minikube
 ```
 
-2.1) Installing Basic Softwares in our EKS
+**2.1) Installing Basic Softwares in our EKS**
 
 Playbook: **k8s-install-basic-software.yml**
 
@@ -113,7 +113,7 @@ http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kube
 #### Use token from "make ansible_k8sinfo" for authorization
 ```
 
-2.2) Installing AWS Load Balancer Controller
+**2.2) Installing AWS Load Balancer Controller**
 
 Installing the AWS Load Balancer Controller in our cluster, it will allow to be created automatically the AWS ELB and Target Groups for our applications deployed.
 
