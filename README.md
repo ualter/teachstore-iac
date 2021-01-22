@@ -115,7 +115,7 @@ http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kube
 
 **2.2) Installing AWS Load Balancer Controller**
 
-Installing the AWS Load Balancer Controller in our cluster, it will allow to be created automatically the AWS ELB and Target Groups for our applications deployed.
+Installing the AWS Load Balancer Controller in our cluster, it will allow to be created automatically a AWS ELB (ALB or NLB) and Target Groups for our applications deployed.
 
 The controller provisions:
 - An AWS Application Load Balancer (ALB) when you create a Kubernetes Ingress.
@@ -129,6 +129,19 @@ Here, in order to this playbook works, we need to have the ```eksctl``` tool ins
 $ make ansible_alb_controller
 ```
 
+2.2.1) Testing AWS ALB with Game 2048 Sample Application
+
+Installation:
+```bash
+$ make ansible_install_game
+# To get the App URL
+$ kubectl get ingress -n game-2048  # it takes a few seconds to be available
+$ kubectl get po -n game-2048
+```
+
+Removing:
+```bash
+$ make ansible_uninstall_game
 ---
 
 #### Check whatelse you can do:
