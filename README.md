@@ -100,11 +100,11 @@ In this Ansible playbook, we perform some basic software configuration in our AW
 
 2.1.1) Install Metrics Server and Dashboard on AWS EKS
 ```bash
-$ make ansible_basic_soft
+$ make ansible-basic-soft
 ```
 2.1.2) Show EKS K8s info, when you need to recover it
 ```bash
-$ make ansible_k8sinfo
+$ make ansible-k8sinfo
 ```
 2.1.3) Access Dashboard using kubectl proxy via API Server
 ```bash
@@ -112,7 +112,7 @@ $ make ansible_k8sinfo
 $ kubectl proxy 
 #### Open in Browser
 http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/#/overview?namespace=default
-#### Use token from "make ansible_k8sinfo" for authorization
+#### Use token from "make ansible-k8sinfo" for authorization
 ```
 
 **2.2) Installing AWS Load Balancer Controller**
@@ -128,14 +128,14 @@ Playbook: **k8s-install-ELB-controller.yml**
 Here, in order to this playbook works, we need to have the ```eksctl``` tool installed.
 
 ```bash
-$ make ansible_elb_controller
+$ make ansible-elb-controller
 ```
 
 2.2.1) Testing AWS ALB with Game 2048 Sample Application
 
 Installation:
 ```bash
-$ make ansible_install_game
+$ make ansible-install-game
 # To get the App URL
 $ kubectl get ingress -n game-2048  # it takes a few seconds to be available
 $ kubectl get po -n game-2048
@@ -143,7 +143,22 @@ $ kubectl get po -n game-2048
 
 Removing:
 ```bash
-$ make ansible_uninstall_game
+$ make ansible-uninstall-game
+```
+
+2.2.2) Testing AWS NLB with Ngixn Sample Application
+
+Installation:
+```bash
+$ make ansible-install-ngixn
+# To get the App URL
+$ kubectl get svc -n default
+$ kubectl get po -n default
+```
+
+Removing:
+```bash
+$ make ansible-uninstall-ngixn
 ```
 
 #### Check whatelse you can do:
