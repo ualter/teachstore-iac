@@ -10,6 +10,7 @@
   - https://docs.aws.amazon.com/eks/latest/userguide/install-aws-iam-authenticator.html
 - kubectl
 - wget
+- eksctl (this is needed if you're going to install the AWS Load Balancer Controller in EKS)
 ---
 
 ## 1) Terraform 
