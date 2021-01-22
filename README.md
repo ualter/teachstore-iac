@@ -45,7 +45,7 @@ Here we start to create the environment itself, for the AWS EKS. This process ca
 ```bash
 #### Inside the main directory (project root)
 $ cd dev
-$ export TF_VAR_environment=dev   # Sets the environment
+$ export TF_VAR_environment=dev   # Sets the environment variable for Terraform scripts
 $ make init
 ```
 1.2.2) Create the Plan (to check first what it's gonna be created)
@@ -58,7 +58,7 @@ $ make apply
 ```
 1.2.3) Point you kubectl to your AWS EKS Kubernetes (kubeconfig creation)
 
-This is important, otherwise your kubectl commands will not work(directed) on EKS.
+This is important, otherwise your kubectl commands will not work(point to) over your EKS.
 ```bash
 $ make kubectl-config-aws
 ```
@@ -66,6 +66,8 @@ $ make kubectl-config-aws
 ---
 
 ## 2) Ansible
+
+Here, the Ansible's playbook is built to trigger commands against EKS (works locally, but could be from anywhere). That's why it is important to check which Kubernetes (API Server) your kubectl is going to direct the commands (the makefile is prepared to configure your local kubectl to point to the new EKS Cluster).
 
 2.1) Playbook: **k8s-basic-software-playbook.yaml**
 
