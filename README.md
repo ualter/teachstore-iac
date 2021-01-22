@@ -69,6 +69,23 @@ $ make kubectl-config-aws
 
 Here, the Ansible's playbook is built to trigger commands against EKS (works locally, but could be from anywhere). That's why it is important to check which Kubernetes (API Server) your kubectl is going to direct the commands *(the makefile is prepared to configure your local kubectl to point to the new EKS Cluster)*.
 
+```bash
+# My Kubernetes Clusters
+$ kubectl config get-clusters
+NAME
+arn:aws:eks:eu-west-3:411078575449:cluster/teachstore-eks-SiALeNT2
+kind-k8s3nodes
+minikube
+
+# Which one I am pointing to...
+$ kubectl config get-contexts
+CURRENT   NAME                                                                 CLUSTER                                                              AUTHINFO                                                             NAMESPACE
+          arn:aws:eks:eu-west-3:411078575449:cluster/teachstore-eks-P7wVN7yl   arn:aws:eks:eu-west-3:411078575449:cluster/teachstore-eks-P7wVN7yl   arn:aws:eks:eu-west-3:411078575449:cluster/teachstore-eks-P7wVN7yl
+*         arn:aws:eks:eu-west-3:411078575449:cluster/teachstore-eks-SiALeNT2   arn:aws:eks:eu-west-3:411078575449:cluster/teachstore-eks-SiALeNT2   arn:aws:eks:eu-west-3:411078575449:cluster/teachstore-eks-SiALeNT2
+          kind-k8s3nodes                                                       kind-k8s3nodes                                                       kind-k8s3nodes
+          minikube                                                             minikube                                                             minikube
+```
+
 2.1) Playbook: **k8s-basic-software-playbook.yaml**
 
 In this Ansible playbook, we perform some basic software configuration in our AWS environment:
