@@ -101,8 +101,4 @@
          kubectl get deployment -n kube-system aws-load-balancer-controller
       register: controller_status
     
-    - name: Status of Controller
-      debug:
-        msg: "{{ controller_status.stdoutlines }}"
-     
      
