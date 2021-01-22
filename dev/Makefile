@@ -58,7 +58,7 @@ ansible_k8sinfo: ## Show Info of K8s EKS, token dashboard URL, etc.
 
 ansible_elb_controller: ## Install Application Balance Controller at EKS Cluster
 	$(eval eks_cluster:=$(shell  kubectl config current-context | sed -e 's/^.*\///g'))
-	ansible-playbook -i  $(ANSIBLEDIR)/hosts $(ANSIBLEDIR)/k8s-install-ELB-controller.yml  --extra-vars="eks_cluster=$(eks_cluster)"
+	ansible-playbook -i  $(ANSIBLEDIR)/hosts $(ANSIBLEDIR)/k8s-install-AWSELB-controller.yml  --extra-vars="eks_cluster=$(eks_cluster)"
 
 ansible_install_game: ## Install Game 2048 Sample App (To test AWS ALB)
 	$(eval eks_cluster:=$(shell  kubectl config current-context | sed -e 's/^.*\///g'))
