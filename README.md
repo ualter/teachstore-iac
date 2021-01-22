@@ -142,7 +142,7 @@ $ kubectl get po -n game-2048
 Removing:
 ```bash
 $ make ansible_uninstall_game
----
+```
 
 #### Check whatelse you can do:
 ```bash
