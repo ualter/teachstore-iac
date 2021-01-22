@@ -1,0 +1,11 @@
+- name: Uninstall Nginx Sample App for testing NLB
+  hosts: local
+  connection: local
+  tasks:
+    - name: Uninstall Nginx Deployment Sample App
+      shell: >
+        kubectl delete -f ./sample-app-nlb-test/deployment.yml
+    - name: Install Nginx Service Sample App
+      shell: >  
+        kubectl delete -f ./sample-app-nlb-test/service.yml
+

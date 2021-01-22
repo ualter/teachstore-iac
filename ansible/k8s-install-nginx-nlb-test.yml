@@ -1,0 +1,35 @@
+- name: Install Nginx Sample App for testing NLB
+  hosts: local
+  connection: local
+  tasks:
+    - name: Install Nginx Deployment Sample App
+      shell: >
+        kubectl apply -f ./sample-app-nlb-test/deployment.yml
+    - name: Install Nginx Service Sample App
+      shell: >  
+        kubectl apply -f ./sample-app-nlb-test/service.yml
+
+    - name: Wait for all Pods become created
+      shell: "kubectl get po --namespace=default --selector app=nginx --output=jsonpath='{.items[*].metadata.name}'"
+      register: pods_created
+      until: item in pods_created.stdout
+      retries: 10
+      delay: 30
+      with_items:
+        - sample-app
+
+    - name: Wait for Pods become ready
+      shell: "kubectl wait --namespace=default --for=condition=Ready pods --selector app=nginx --timeout=600s"
+      register: pods_ready
+    
+    - debug: var=pods_ready.stdout_lines
+
+    - name: Get the Service for Nginx
+      shell: "kubectl get svc sample-service"
+      register: svc
+    
+    - name: Service for Nginx
+      debug: var=svc.stdout_lines
+    
+  
+      

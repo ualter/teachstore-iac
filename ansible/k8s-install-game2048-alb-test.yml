@@ -1,4 +1,4 @@
-- name: Install ALB Controller
+- name: Install Game 2048 Sample App for testing ALB
   hosts: local
   connection: local
   tasks:

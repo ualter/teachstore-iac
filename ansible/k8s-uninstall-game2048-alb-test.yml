@@ -1,4 +1,4 @@
-- name: Install ALB Controller
+- name: Uninstall Game 2048 Sample App
   hosts: local
   connection: local
   tasks:
