@@ -86,7 +86,9 @@ CURRENT   NAME                                                                 C
           minikube                                                             minikube                                                             minikube
 ```
 
-2.1) Playbook: **k8s-basic-software-playbook.yaml**
+2.1) Installing Basic Softwares in our EKS
+
+Playbook: **k8s-install-basic-software.yml**
 
 In this Ansible playbook, we perform some basic software configuration in our AWS environment:
 - **Metrics Server** 
@@ -109,6 +111,22 @@ $ kubectl proxy
 #### Open in Browser
 http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/#/overview?namespace=default
 #### Use token from "make ansible_k8sinfo" for authorization
+```
+
+2.2) Installing AWS Load Balancer Controller
+
+Installing the AWS Load Balancer Controller in our cluster, it will allow to be created automatically the AWS ELB and Target Groups for our applications deployed.
+
+The controller provisions:
+- An AWS Application Load Balancer (ALB) when you create a Kubernetes Ingress.
+- An AWS Network Load Balancer (NLB) when you create a Kubernetes Service of type LoadBalancer.
+
+Playbook: **k8s-install-ELB-controller.yml**
+
+Here, in order to this playbook works, we need to have the ```eksctl``` tool installed.
+
+```bash
+$ make ansible_alb_controller
 ```
 
 ---
