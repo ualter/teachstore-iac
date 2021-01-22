@@ -1,6 +1,8 @@
 # IaC - Infrastructure on AWS
 ## Terraform & Ansible & EKS
 ![dashboard](docs/images/dashboard.png)
+![nodes](docs/images/Nodes.png)
+![pods](docs/images/Pods.png)
 ![eks cluster](docs/images/overview-eks.png)
 ![eks workloads](docs/images/workloads.png)
 ---
