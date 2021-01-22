@@ -67,7 +67,7 @@ $ make kubectl-config-aws
 
 ## 2) Ansible
 
-Here, the Ansible's playbook is built to trigger commands against EKS (works locally, but could be from anywhere). That's why it is important to check which Kubernetes (API Server) your kubectl is going to direct the commands (the makefile is prepared to configure your local kubectl to point to the new EKS Cluster).
+Here, the Ansible's playbook is built to trigger commands against EKS (works locally, but could be from anywhere). That's why it is important to check which Kubernetes (API Server) your kubectl is going to direct the commands *(the makefile is prepared to configure your local kubectl to point to the new EKS Cluster)*.
 
 2.1) Playbook: **k8s-basic-software-playbook.yaml**
 
