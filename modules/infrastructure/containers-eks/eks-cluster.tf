@@ -13,6 +13,7 @@ module "eks" {
     Unit         = var.unit
     Organization = var.organization
     Name         = var.name
+    Enviroment   = var.environment
   }
 
   vpc_id = module.vpc.vpc_id

@@ -1,0 +1,32 @@
+- name: Install Game 2048 Sample App for testing ALB
+  hosts: local
+  connection: local
+  tasks:
+    - name: Install Game 208 Sample App
+      shell: >
+        kubectl apply -f https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/v2.1.0/docs/examples/2048/2048_full.yaml
+
+    - name: Wait for all Pods become created
+      shell: "kubectl get po --namespace=game-2048 --selector app.kubernetes.io/name=app-2048 --output=jsonpath='{.items[*].metadata.name}'"
+      register: pods_created
+      until: item in pods_created.stdout
+      retries: 10
+      delay: 30
+      with_items:
+        - deployment-2048
+
+    - name: Wait for Pods become ready
+      shell: "kubectl wait --namespace=game-2048 --for=condition=Ready pods --selector app.kubernetes.io/name=app-2048 --timeout=600s"
+      register: pods_ready
+    
+    - debug: var=pods_ready.stdout_lines
+
+    - name: Get the Ingress for the Game 2048
+      shell: "kubectl get ingress/ingress-2048 -n game-2048"
+      register: ingress
+    
+    - name: Ingress for Game 2048 (ADDRESS URL)
+      debug: var=ingress.stdout_lines
+    
+  
+      

@@ -1,8 +1,8 @@
 # IaC - Infrastructure on AWS
 ## Terraform & Ansible & EKS
-![dashboard](https://raw.githubusercontent.com/ualter/teachstore-iac/master/images/dashboard.png)
-![eks cluster](https://raw.githubusercontent.com/ualter/teachstore-iac/master/images/overview-eks.png)
-![eks workloads](https://raw.githubusercontent.com/ualter/teachstore-iac/master/images/workloads.png)
+![dashboard](docs/images/dashboard.png)
+![eks cluster](docs/images/overview-eks.png)
+![eks workloads](docs/images/workloads.png)
 ---
 ## *Before start...* Prerequisites
 - AWS CLI - Installed & Configured
@@ -10,6 +10,7 @@
   - https://docs.aws.amazon.com/eks/latest/userguide/install-aws-iam-authenticator.html
 - kubectl
 - wget
+- eksctl (needed if you're going to install the AWS Load Balancer Controller in EKS)
 ---
 
 ## 1) Terraform 
@@ -37,13 +38,14 @@ $ export TF_VAR_environment=dev
 $ make init
 $ make apply
 ```
-### 1.2) Start Terraform Infrastructure "Workspace"
+### 1.2) Start Terraform Infrastructure Environment
 Here we start to create the environment itself, for the AWS EKS. This process can be (re)executed anytime and as many times as we need, (re)creating/updating all the environment infrastructure.
 
-1.2.1) Create the State (donwload modules, plugins, etc.).
+1.2.1) Choose the environment (dev) and create the State (donwload modules, plugins, etc.).
 ```bash
 #### Inside the main directory (project root)
-$ export ENVIRONMENT=dev   # Which environment?
+$ cd dev
+$ export TF_VAR_environment=dev   # Sets the environment variable for Terraform scripts
 $ make init
 ```
 1.2.2) Create the Plan (to check first what it's gonna be created)
@@ -56,7 +58,7 @@ $ make apply
 ```
 1.2.3) Point you kubectl to your AWS EKS Kubernetes (kubeconfig creation)
 
-This is important, otherwise your kubectl commands will not work(directed) on EKS.
+This is important, otherwise your kubectl commands will not work(point to) over your EKS.
 ```bash
 $ make kubectl-config-aws
 ```
@@ -65,7 +67,28 @@ $ make kubectl-config-aws
 
 ## 2) Ansible
 
-2.1) Playbook: **k8s-basic-software-playbook.yaml**
+Here, the Ansible's playbook is built to trigger commands against EKS (works locally, but could be from anywhere). That's why it is important to check which Kubernetes (API Server) your kubectl is going to direct the commands *(the makefile is prepared to configure your local kubectl to point to the new EKS Cluster)*.
+
+```bash
+# My Kubernetes Clusters
+$ kubectl config get-clusters
+NAME
+arn:aws:eks:eu-west-3:411078575449:cluster/teachstore-eks-SiALeNT2
+kind-k8s3nodes
+minikube
+
+# Which one I am pointing to...
+$ kubectl config get-contexts
+CURRENT   NAME                                                                 CLUSTER                                                              AUTHINFO                                                             NAMESPACE
+          arn:aws:eks:eu-west-3:411078575449:cluster/teachstore-eks-P7wVN7yl   arn:aws:eks:eu-west-3:411078575449:cluster/teachstore-eks-P7wVN7yl   arn:aws:eks:eu-west-3:411078575449:cluster/teachstore-eks-P7wVN7yl
+*         arn:aws:eks:eu-west-3:411078575449:cluster/teachstore-eks-SiALeNT2   arn:aws:eks:eu-west-3:411078575449:cluster/teachstore-eks-SiALeNT2   arn:aws:eks:eu-west-3:411078575449:cluster/teachstore-eks-SiALeNT2
+          kind-k8s3nodes                                                       kind-k8s3nodes                                                       kind-k8s3nodes
+          minikube                                                             minikube                                                             minikube
+```
+
+**2.1) Installing Basic Softwares in our EKS**
+
+Playbook: **k8s-install-basic-software.yml**
 
 In this Ansible playbook, we perform some basic software configuration in our AWS environment:
 - **Metrics Server** 
@@ -90,7 +113,36 @@ http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kube
 #### Use token from "make ansible_k8sinfo" for authorization
 ```
 
----
+**2.2) Installing AWS Load Balancer Controller**
+
+Installing the AWS Load Balancer Controller in our cluster, it will allow to be created automatically a AWS ELB (ALB or NLB) and Target Groups for our applications deployed.
+
+The controller provisions:
+- An AWS Application Load Balancer (ALB) when you create a Kubernetes Ingress.
+- An AWS Network Load Balancer (NLB) when you create a Kubernetes Service of type LoadBalancer.
+
+Playbook: **k8s-install-ELB-controller.yml**
+
+Here, in order to this playbook works, we need to have the ```eksctl``` tool installed.
+
+```bash
+$ make ansible_alb_controller
+```
+
+2.2.1) Testing AWS ALB with Game 2048 Sample Application
+
+Installation:
+```bash
+$ make ansible_install_game
+# To get the App URL
+$ kubectl get ingress -n game-2048  # it takes a few seconds to be available
+$ kubectl get po -n game-2048
+```
+
+Removing:
+```bash
+$ make ansible_uninstall_game
+```
 
 #### Check whatelse you can do:
 ```bash
