@@ -42,15 +42,17 @@ module "spain" {
 output "region_spain" {
   value = var.aws_regions["paris"]
 }
-output "teachstore_eks_cluster_name" {
-  value = module.spain.teachstore_eks_cluster_name
-}
-output "teachstore_eks_cluster_endpoint" {
-  value = module.spain.teachstore_eks_cluster_endpoint
-}
-output "teachstore_eks_cluster_kubeconfig" {
-  value = module.spain.teachstore_eks_cluster_kubeconfig
-}
-output "teachstore_eks_config_map_aws_auth" {
-  value = module.spain.teachstore_eks_config_map_aws_auth
-}
+
+### Outputs Teachstore EKS
+#output "teachstore_eks_cluster_name" {
+#  value = module.spain.teachstore_eks_cluster_name
+#}
+#output "teachstore_eks_cluster_endpoint" {
+#  value = module.spain.teachstore_eks_cluster_endpoint
+#}
+#output "teachstore_eks_cluster_kubeconfig" {
+#  value = module.spain.teachstore_eks_cluster_kubeconfig
+#}
+#output "teachstore_eks_config_map_aws_auth" {
+#  value = module.spain.teachstore_eks_config_map_aws_auth
+#}

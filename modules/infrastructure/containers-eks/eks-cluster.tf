@@ -2,6 +2,10 @@
 # https://registry.terraform.io/browse/modules?provider=aws
 # https://registry.terraform.io/modules/terraform-aws-modules/eks/aws/latest
 
+provider "aws" {
+  region  = var.aws_region
+}
+
 module "eks" {
   source          = "terraform-aws-modules/eks/aws"
   cluster_name    = var.cluster_name

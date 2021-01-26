@@ -1,0 +1,13 @@
+
+resource "aws_eip" "nat_eip" {
+  count      = var.create_elastic_ip ? 1 : 0  
+  vpc        = true
+  depends_on = [data.aws_internet_gateway.default]
+
+  tags = {
+    Name         = "${var.environment}-bastion-eip"
+    Unit         = var.unit
+    Organization = var.organization
+    Enviroment   = var.environment
+  }
+}

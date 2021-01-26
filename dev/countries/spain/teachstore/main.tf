@@ -34,6 +34,7 @@ locals {
 # EKS Cluster
 module "eks-teachstore" {
   source                     = "../../../../modules/infrastructure/containers-eks"
+  region                     = var.region
   environment                = var.environment
   name                       = local.name
   organization               = var.organization

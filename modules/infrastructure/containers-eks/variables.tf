@@ -1,3 +1,4 @@
+variable "region" {}
 variable "unit" {}
 variable "name" {}
 variable "organization" {}
