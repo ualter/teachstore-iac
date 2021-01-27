@@ -5,9 +5,10 @@ resource "aws_subnet" "created" {
   cidr_block = "172.31.128.0/20"   # TODO: pass as variable
 
   tags = {
-    Name         = "${var.environment}-bastion"
+    Name         = "private-${var.environment}-bastion"
     Unit         = var.unit
     Organization = var.organization
     Enviroment   = var.environment
+    Type         = "private"
   }
 }

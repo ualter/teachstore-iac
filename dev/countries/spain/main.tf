@@ -30,25 +30,27 @@ module "bastion-ssm" {
 
     name              = "spain"
     environment       = var.environment
+    ec2_key_pair_name = "Administrator"
+    instance_type     = "t3.nano"
     vpc_id            = "vpc-4b594f22"
     public_subnets    = ["subnet-1d742066"]
 
-    # Pass the subnet-id of your Private Subnet, if you have already one created and want to use it
-    # IMPORTANT! This subnet must have a Route in its Route Table pointing the route "0.0.0.0/" to a 
-    # NatGateway (that, in turn, sits in another Subnet, a public one)
+    #
+    # PRIVATE SUBNET where it will be created the EC2 Bastion
+    # =======================================================
+    # Inform the subnet-id of your Private Subnet, in case you have already one created and you want to use it
+    # IMPORTANT! This subnet must have a Route in its Route Table pointing route "0.0.0.0/" to a NAT Gateway
     private_subnets   = ["subnet-026b34480a23089d4"]
     # Otherwise...
-    # Pass blanks as subnet-id if you want that a new Private Subnet be created, where it will be install the EC2 Bastion
+    # Pass blanks as subnet-id if you want that a new Private Subnet be created 
     # private_subnets   = ""
 
 
-    # Pass the Elastic IP Id if you have one created (no-associated with any other resource) to be used in the NatGateway
+    # Pass the Elastic IP Id, if you have one created (not associated with any other resource) free to be used in the NAT Gateway
     elastic_ip_id     = "eipalloc-044f6134dafd1d57f"
     # Otherwise...
-    # Pass blanks as Elastic IP Id to be created a new oned
+    # Pass blanks as Elastic IP Id to be created a new one
     #elastic_ip_id     = ""
-
-    ec2_key_pair_name = "Administrator"
 
     ssh_forward_rules = [
       #"LocalForward 11433 ${module.rds.sql_endpoint}:${module.rds.sql_port}",
