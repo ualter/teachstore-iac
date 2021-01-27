@@ -56,3 +56,8 @@ output "region_spain" {
 #output "teachstore_eks_config_map_aws_auth" {
 #  value = module.spain.teachstore_eks_config_map_aws_auth
 #}
+
+### Outputs Bastion-SSM
+output "bastion_instance_id" {
+  value = module.spain.bastion_instance_id
+}

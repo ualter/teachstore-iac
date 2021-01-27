@@ -6,7 +6,7 @@ output "cmd" {
   }
 }
 
-output "instance_id" {
+output "bastion_instance_id" {
   value = element(aws_instance.this.*.id, 0)
 }
 

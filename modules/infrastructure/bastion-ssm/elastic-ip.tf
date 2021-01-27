@@ -1,6 +1,6 @@
 
 resource "aws_eip" "nat_eip" {
-  count      = var.create_elastic_ip ? 1 : 0  
+  count      = var.elastic_ip_id == "" ? 1 : 0  
   vpc        = true
   depends_on = [data.aws_internet_gateway.default]
 

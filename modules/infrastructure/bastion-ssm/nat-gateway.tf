@@ -5,7 +5,7 @@ locals {
 
 resource "aws_nat_gateway" "this" {
   count         = 1
-  allocation_id = var.create_elastic_ip ? element(aws_eip.nat_eip.*.id, count.index) : var.elastic_ip_id
+  allocation_id = var.elastic_ip_id == "" ? element(aws_eip.nat_eip.*.id, count.index) : var.elastic_ip_id
   #allocation_id = var.elastic_ip_id
   subnet_id     = local.natgw_public_subnet
   depends_on    = [data.aws_internet_gateway.default]

@@ -21,3 +21,7 @@
 #  description = "A kubernetes configuration to authenticate to this EKS cluster."
 #  value       = module.teachstore.eks_config_map_aws_auth
 #}
+
+output "bastion_instance_id" {
+  value = module.bastion-ssm.bastion_instance_id
+}
