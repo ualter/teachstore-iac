@@ -15,6 +15,7 @@ resource "aws_default_subnet" "default_az" {
 }
 
 resource "aws_security_group" "ssh" {
+  count  = !var.private_server ? 1 : 0
   name   = "ssh"
   vpc_id = aws_default_vpc.default.id
 
@@ -37,18 +38,18 @@ resource "aws_security_group" "ssh" {
   }
 }
 
+locals {
+  descrip_sg_apache    = !var.private_server ? "Allow HTTP inbound traffic" : "Allow Internal HTTP inbound traffic"
+}
+
+resource "aws_default_security_group" "default" {
+  vpc_id = aws_default_vpc.default.id
+}
+
 resource "aws_security_group" "apache" {
   name   = "apache"
   vpc_id = aws_default_vpc.default.id
-
-  ingress {
-    protocol    = "tcp"
-    from_port   = 80
-    to_port     = 80
-    cidr_blocks = [
-      "0.0.0.0/0"
-    ]
-  }
+  description = local.descrip_sg_apache
 
   egress {
     protocol    = -1
@@ -60,13 +61,46 @@ resource "aws_security_group" "apache" {
   }
 }
 
-resource "aws_instance" "myInstance" {
-  ami           = "ami-0d3f551818b21ed81"
-  instance_type = "t2.micro"
-  subnet_id     = aws_default_subnet.default_az.id
-  key_name      = var.ec2_key_pair_name
+resource "aws_security_group_rule" "apache-public" {
+  count             = var.private_server ? 0 : 1
+  type              = "ingress"
+  from_port         = 80
+  to_port           = 80
+  protocol          = "tcp"
+  security_group_id = aws_security_group.apache.id
+  cidr_blocks       = [ "0.0.0.0/0" ]
+}
 
-  vpc_security_group_ids = [aws_security_group.ssh.id, aws_security_group.apache.id]
+resource "aws_security_group_rule" "apache-private" {
+  count                    = var.private_server ? 1 : 0
+  type                     = "ingress"
+  from_port                = 80
+  to_port                  = 80
+  protocol                 = "tcp"
+  security_group_id        = aws_security_group.apache.id
+  source_security_group_id = aws_security_group.apache.id
+}
+
+
+resource "aws_subnet" "created" {
+  count      = var.private_server ? 1 : 0
+  vpc_id     = aws_default_vpc.default.id
+  cidr_block = var.cidr_block_private_subnet
+}
+
+resource "aws_instance" "myInstance" {
+  count                       = 1
+  ami                         = "ami-0d3f551818b21ed81"
+  instance_type               = "t2.micro"
+  subnet_id                   = aws_default_subnet.default_az.id
+  key_name                    = var.ec2_key_pair_name
+  associate_public_ip_address = var.private_server ? false : true
+
+  vpc_security_group_ids = var.private_server ? [aws_security_group.apache.id] : [element(aws_security_group.ssh.*.id,count.index), aws_security_group.apache.id]
+
+  tags = {
+    Name = "Apacher Server"
+  }
 
   user_data     = <<-EOF
                   #!/bin/bash
@@ -79,5 +113,5 @@ resource "aws_instance" "myInstance" {
 }
 
 output "DNS" {
-  value = aws_instance.myInstance.public_dns
+  value = var.private_server ? element(aws_instance.myInstance.*.private_ip,0) : element(aws_instance.myInstance.*.public_dns,0)
 }

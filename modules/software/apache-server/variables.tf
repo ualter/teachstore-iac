@@ -12,3 +12,13 @@ variable ec2_key_pair_name {
     type    = string
     default = "Administrator"
 }
+
+variable private_server {
+    type    = bool
+    default = false
+}
+
+variable cidr_block_private_subnet {
+    type = string
+    default = "172.31.128.0/20"
+}
