@@ -47,9 +47,9 @@ resource "aws_instance" "this" {
   subnet_id                   = local.subnet_bastion == "" ? element(aws_subnet.created.*.id,count.index) : local.subnet_bastion
   associate_public_ip_address = false
 
-  #vpc_security_group_ids = concat(var.ext_security_groups, [
-  #  aws_security_group.this.id
-  #])
+  vpc_security_group_ids = concat(var.ext_security_groups, [
+    aws_security_group.this.id
+  ])
 
   tags = {
     Name         = "${var.environment}-bastion"

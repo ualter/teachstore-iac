@@ -15,10 +15,12 @@ variable ec2_key_pair_name {
 
 variable private_server {
     type    = bool
-    default = false
+    default = true
 }
 
-variable cidr_block_private_subnet {
-    type = string
-    default = "172.31.128.0/20"
+variable bastion_source_security_group_id {
+  description = "Security Group of Bastion to Allow Connections"
+  type        = string
+  default     = "sg-0ac26c7bab0c191e9"
 }
+

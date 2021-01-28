@@ -81,11 +81,13 @@ resource "aws_security_group_rule" "apache-private" {
   source_security_group_id = aws_security_group.apache.id
 }
 
-
-resource "aws_subnet" "created" {
-  count      = var.private_server ? 1 : 0
-  vpc_id     = aws_default_vpc.default.id
-  cidr_block = var.cidr_block_private_subnet
+resource "aws_security_group_rule" "bastion" {
+  type                     = "ingress"
+  from_port                = 22
+  to_port                  = 22
+  protocol                 = "tcp"
+  security_group_id        = aws_security_group.apache.id
+  source_security_group_id = var.bastion_source_security_group_id
 }
 
 resource "aws_instance" "myInstance" {
@@ -109,6 +111,7 @@ resource "aws_instance" "myInstance" {
                   apt install -y apache2
                   echo "<img src='/icons/ubuntu-logo.png'><font style='font-family:Arial'><h3>Apache2 Ubuntu - EC2 Instance - t2.micro - Ubuntu 20.4 - ami-0d3f551818b21ed81</h3>" > /var/www/html/index.html
                   systemctl start apache2
+                  cat ~/.ssh/authorized_keys
                   EOF
 }
 

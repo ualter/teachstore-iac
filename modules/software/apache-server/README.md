@@ -19,10 +19,3 @@ variable private_server {
     type    = bool
     default = true
 }
-
-# In the case of a Private Apache Server, a valid CIDR Block for the new Private Subnet it is necessary to be informed
-variable cidr_block_private_subnet {
-    type = string
-    default = "172.31.128.0/20"
-}
-```
