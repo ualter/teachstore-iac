@@ -61,6 +61,7 @@ resource "aws_security_group" "apache" {
   }
 }
 
+# Allow Connections from the World(Public) at HTTP:80
 resource "aws_security_group_rule" "apache-public" {
   count             = var.private_server ? 0 : 1
   type              = "ingress"
@@ -71,6 +72,7 @@ resource "aws_security_group_rule" "apache-public" {
   cidr_blocks       = [ "0.0.0.0/0" ]
 }
 
+# Allow Connection from Bastion throgh at HTTP:80
 resource "aws_security_group_rule" "apache-private" {
   count                    = var.private_server ? 1 : 0
   type                     = "ingress"
@@ -78,10 +80,11 @@ resource "aws_security_group_rule" "apache-private" {
   to_port                  = 80
   protocol                 = "tcp"
   security_group_id        = aws_security_group.apache.id
-  source_security_group_id = aws_security_group.apache.id
+  source_security_group_id = var.bastion_source_security_group_id
 }
 
-resource "aws_security_group_rule" "bastion" {
+# Allow Connection from Bastion throgh at SSH:22
+resource "aws_security_group_rule" "bastion-ssh" {
   type                     = "ingress"
   from_port                = 22
   to_port                  = 22
@@ -90,11 +93,21 @@ resource "aws_security_group_rule" "bastion" {
   source_security_group_id = var.bastion_source_security_group_id
 }
 
+# Allow Connection from Bastion throgh at ICMP (Ping)
+resource "aws_security_group_rule" "bastion-icmp" {
+  type                     = "ingress"
+  from_port                = -1
+  to_port                  = -1
+  protocol                 = "icmp"
+  security_group_id        = aws_security_group.apache.id
+  source_security_group_id = var.bastion_source_security_group_id
+}
+
 resource "aws_instance" "myInstance" {
   count                       = 1
   ami                         = "ami-0d3f551818b21ed81"
   instance_type               = "t2.micro"
-  subnet_id                   = aws_default_subnet.default_az.id
+  subnet_id                   = var.private_server ? element(aws_subnet.created.*.id, count.index) : aws_default_subnet.default_az.id
   key_name                    = var.ec2_key_pair_name
   associate_public_ip_address = var.private_server ? false : true
 
