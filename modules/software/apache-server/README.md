@@ -5,7 +5,7 @@ Create a Apache Server in a Private or Public Subnet.
 
 ![dashboard](images/apache-ec2.png)
 
-Creating a Public Apache Server
+Public Apache Server
 ```bash
 variable private_server {
     type    = bool
@@ -13,7 +13,9 @@ variable private_server {
 }
 ```
 
-Creating a Private Apache Server
+**OR** (to create an internal Apache Server)
+
+Private Apache Server
 ```bash
 # When true the Apache Server will be installed in a Private Subnet (created here), also:
 # - must be informed a valid CIDR Block (available) in the VPC where it's gonna be
