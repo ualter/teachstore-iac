@@ -6,6 +6,7 @@ resource "aws_security_group" "this" {
   name   = "${var.environment}-bastion"
   vpc_id = var.vpc_id
 
+  # Nope!
   #ingress {
   #  protocol    = "tcp"
   #  from_port   = 22
@@ -14,10 +15,10 @@ resource "aws_security_group" "this" {
   #}
 
   egress {
-    protocol    = -1
-    from_port   = 0
-    to_port     = 0
-    cidr_blocks = var.allowed_cidr_blocks
+    protocol    = "tcp"
+    from_port   = 443
+    to_port     = 443
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   tags = {
@@ -36,7 +37,7 @@ locals {
 
 ## NEXT SESSION....
 ## Test with Subnet already create and NOT create (created by the module)
-## Test with Elastic IP already created and NOT created (create by the module)
+## OK - Done! - Test with Elastic IP already created and NOT created (create by the module)
 
 resource "aws_instance" "this" {
   count                       = 1

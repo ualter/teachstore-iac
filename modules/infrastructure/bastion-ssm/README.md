@@ -1,27 +1,11 @@
-provider "aws" {
-  region  = var.aws_region
-}
+# IaC - Infrastructure on AWS
+## AWS SSM Bastion Server
 
-#### Do it Here everything that could be generic, that is, necessary and used for all Applications 
-#
-# Generic VPC, Subnets, SG, etc.
-# Example:
-#   A generic VPC could be generated here (with all its characteristics) and passed as a parameter Vpc.Id to the Applications Modules
-#
+Create an AWS SSM Bastion Server (Private)
 
 
-### Installing Applications, using their own modules  (their specific resources: EKS, BeanStalk, etc.)
-################################################  Teachstore 
-#module "teachstore" {
-#  source                     = "./teachstore"
-#  aws_region                 = var.aws_region
-#  organization               = var.organization
-#  unit                       = var.unit
-#  environment                = var.environment
-#}
-
-
-
+Usage
+```bash
 module "bastion-ssm" {
     source            = "../../../modules/infrastructure/bastion-ssm"
     aws_region        = var.aws_region
@@ -39,10 +23,10 @@ module "bastion-ssm" {
     # PRIVATE SUBNET where it will be created the EC2 Bastion
     # =======================================================
     # Inform the subnet-id of your Private Subnet, in case you have already one created and you want to use it
-    # IMPORTANT! This subnet must have a Route in its Route Table pointing route "0.0.0.0/" to a NAT Gateway
+    # IMPORTANT! This subnet must have a Route in its Route Table pointing route "0.0.0.0/0" to a NAT Gateway
     #private_subnets   = ["subnet-026b34480a23089d4"]
     # Otherwise...
-    # Pass blanks as subnet-id if you want that a new Private Subnet be created, as well its CDIRs Block
+    # Pass blanks as subnet-id if you want that a new Private Subnet be created, as well pass its CDIRs Block
     private_subnets   = [""]
     private_subnet_cidr_block = "172.31.128.0/20"
 
@@ -60,4 +44,5 @@ module "bastion-ssm" {
       "LocalForward 44443 activemq-ip:8441"
     ]
 }
+```
 

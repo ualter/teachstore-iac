@@ -6,7 +6,6 @@ locals {
 resource "aws_nat_gateway" "this" {
   count         = 1
   allocation_id = var.elastic_ip_id == "" ? element(aws_eip.nat_eip.*.id, count.index) : var.elastic_ip_id
-  #allocation_id = var.elastic_ip_id
   subnet_id     = local.natgw_public_subnet
   depends_on    = [data.aws_internet_gateway.default]
 
@@ -18,15 +17,14 @@ resource "aws_nat_gateway" "this" {
   }
 }
 
-
 data "aws_route_table" "selected" {
+  count     = local.subnet_bastion != "" ? 1 : 0
   subnet_id = local.routetable_private_subnet
 }
 
 resource "aws_route" "route" {
-  count                     = 1
-  route_table_id            = data.aws_route_table.selected.id
+  count                     = local.subnet_bastion != "" ? 1 : 0
+  route_table_id            = element(data.aws_route_table.selected.*.id, count.index)
   destination_cidr_block    = "0.0.0.0/0"
   nat_gateway_id            = element(aws_nat_gateway.this.*.id, count.index)
-  #nat_gateway_id            = aws_nat_gateway.this.id
 }

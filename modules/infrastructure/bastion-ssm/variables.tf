@@ -13,10 +13,6 @@ variable "instance_type" {
   default = "t3.nano"
 }
 
-variable "create_elastic_ip" {
-  default = false
-}
-
 variable "elastic_ip_id" {
   default = ""
 }
@@ -38,12 +34,19 @@ variable "ssh_forward_rules" {
   default     = []
 }
 
+# Not used (for now)
 variable "allowed_cidr_blocks" {
   type        = list(string)
   description = "List of network subnets that are allowed"
   default = [
     "0.0.0.0/0"
   ]
+}
+
+variable "private_subnet_cidr_block" {
+  type = string
+  description = "The CIDR Block for the new Private Subnet (when requested)"
+  default = "10.0.0.0/20"
 }
 
 locals {

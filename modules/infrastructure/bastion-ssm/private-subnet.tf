@@ -2,7 +2,7 @@
 resource "aws_subnet" "created" {
   count      = local.subnet_bastion == "" ? 1 : 0
   vpc_id     = var.vpc_id
-  cidr_block = "172.31.128.0/20"   # TODO: pass as variable
+  cidr_block = var.private_subnet_cidr_block
 
   tags = {
     Name         = "private-${var.environment}-bastion"
@@ -12,3 +12,31 @@ resource "aws_subnet" "created" {
     Type         = "private"
   }
 }
+
+resource "aws_route_table" "rt" {
+  count  = local.subnet_bastion == "" ? 1 : 0
+  vpc_id = var.vpc_id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    nat_gateway_id = element(aws_nat_gateway.this.*.id, count.index)
+  }
+
+  tags = {
+    Name         = "private-${var.environment}-bastion"
+    Unit         = var.unit
+    Organization = var.organization
+    Enviroment   = var.environment
+  }
+}
+
+resource "aws_route_table_association" "rt-subnet" {
+  count          = local.subnet_bastion == "" ? 1 : 0
+  subnet_id      = element(aws_subnet.created.*.id, count.index)
+  route_table_id = element(aws_route_table.rt.*.id, count.index)
+}
+
+## TODO: (If the Subnete were created)
+# - Check if the CIDR Block can be automatically generated based on the VPC CIDR Block
+# - Create a Route Table with a route only to NAT Gateway and local
+# - Associate with the Subnet
