@@ -102,6 +102,7 @@ resource "aws_instance" "myInstance" {
 
   tags = {
     Name = "Apacher Server"
+    Type = var.private_server ? "private" : "public"
   }
 
   user_data     = <<-EOF

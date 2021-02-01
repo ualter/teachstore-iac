@@ -35,8 +35,3 @@ resource "aws_route_table_association" "rt-subnet" {
   subnet_id      = element(aws_subnet.created.*.id, count.index)
   route_table_id = element(aws_route_table.rt.*.id, count.index)
 }
-
-## TODO: (If the Subnete were created)
-# - Check if the CIDR Block can be automatically generated based on the VPC CIDR Block
-# - Create a Route Table with a route only to NAT Gateway and local
-# - Associate with the Subnet
