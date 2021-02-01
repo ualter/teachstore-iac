@@ -47,7 +47,7 @@ resource "aws_default_security_group" "default" {
 }
 
 resource "aws_security_group" "apache" {
-  name   = "apache"
+  name   = "Apache Server"
   vpc_id = aws_default_vpc.default.id
   description = local.descrip_sg_apache
 
