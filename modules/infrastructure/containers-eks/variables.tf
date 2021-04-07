@@ -1,4 +1,4 @@
-variable "region" {}
+variable "aws_region" {}
 variable "unit" {}
 variable "name" {}
 variable "organization" {}

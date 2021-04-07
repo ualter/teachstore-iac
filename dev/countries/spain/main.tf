@@ -12,13 +12,13 @@ provider "aws" {
 
 ### Installing Applications, using their own modules  (their specific resources: EKS, BeanStalk, etc.)
 ################################################  Teachstore 
-#module "teachstore" {
-#  source                     = "./teachstore"
-#  aws_region                 = var.aws_region
-#  organization               = var.organization
-#  unit                       = var.unit
-#  environment                = var.environment
-#}
+module "teachstore" {
+  source                     = "./teachstore"
+  aws_region                 = var.aws_region
+  organization               = var.organization
+  unit                       = var.unit
+  environment                = var.environment
+}
 
 
 
