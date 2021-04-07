@@ -48,10 +48,10 @@ module "bastion-ssm" {
 
 
     # Pass the Elastic IP Id, if you have one created (not associated with any other resource) free to be used in the NAT Gateway
-    elastic_ip_id     = "eipalloc-044f6134dafd1d57f"
+    #elastic_ip_id     = "eipalloc-044f6134dafd1d57f"
     # Otherwise...
     # Pass blanks as Elastic IP Id to be created a new one
-    #elastic_ip_id     = ""
+    elastic_ip_id     = ""
 
     ssh_forward_rules = [
       #"LocalForward 11433 ${module.rds.sql_endpoint}:${module.rds.sql_port}",
